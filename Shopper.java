@@ -39,6 +39,13 @@ public class Shopper extends Person implements Comparable<Shopper>{
 		double amount = roundToTwoDecimalPoints(this.totalPurchase);
 		return amount;
 	}
+	
+	/**
+	 * take of 15% of total purchase value
+	 */
+	public void giveCoupon() {
+		totalPurchase *= .85;
+	}
 	/**
 	 * @return user's name
 	 */

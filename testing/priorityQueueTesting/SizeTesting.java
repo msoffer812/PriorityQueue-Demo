@@ -23,7 +23,7 @@ class SizeTesting {
 	@Test
 	void arrayWith1EnqueuedIsSize1()
 	{
-		shoppers.enqueue(new Shopper(0, 0, "Meira", 0));
+		shoppers.enqueue(new Shopper(0, 0, "Meira"));
 		assertEquals(shoppers.size(), 1);
 	}
 	
@@ -32,7 +32,7 @@ class SizeTesting {
 	{
 		for(int i=0;i<5;i++)
 		{
-			shoppers.enqueue(new Shopper(0, 0, "Meira", 0));
+			shoppers.enqueue(new Shopper(0, 0, "Meira"));
 		}
 		assertEquals(shoppers.size(), 5);
 	}
@@ -42,7 +42,7 @@ class SizeTesting {
 	{
 		for(int i=0;i<5;i++)
 		{
-			shoppers.enqueue(new Shopper(0, 0, "Meira", 0));
+			shoppers.enqueue(new Shopper(0, 0, "Meira"));
 		}
 		shoppers.dequeue();
 		assertEquals(shoppers.size(), 4);

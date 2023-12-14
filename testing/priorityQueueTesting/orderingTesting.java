@@ -18,14 +18,14 @@ class orderingTesting {
 	}
 	@Test
 	void oneShopperEnqueuedIsTheSameAsTheOneDequeued() {
-		Shopper newShopper = new Shopper(20, 5, "Meira", 0);
+		Shopper newShopper = new Shopper(20, 5, "Meira");
 		shoppers.enqueue(newShopper);
 		assertEquals(newShopper, shoppers.dequeue());
 	}
 	@Test
 	void twoShoppersOfSamePriorityEnqueuedMaintainsInsertionOrder() {
-		Shopper newShopper1 = new Shopper(20, 5, "Meira", 1);
-		Shopper newShopper2 = new Shopper(20, 5, "Tova", 2);
+		Shopper newShopper1 = new Shopper(20, 5, "Meira");
+		Shopper newShopper2 = new Shopper(20, 5, "Tova");
 		shoppers.enqueue(newShopper1);
 		shoppers.enqueue(newShopper2);
 		assertEquals(newShopper1, shoppers.dequeue());
@@ -33,8 +33,8 @@ class orderingTesting {
 	}
 	@Test
 	void twoShoppersLowerPriorityInsertedFirstMaintainsPriorityOrder() {
-		Shopper newShopper1 = new Shopper(20, 5, "Meira", 1);
-		Shopper newShopper2 = new Shopper(20, 8, "Tova", 2);
+		Shopper newShopper1 = new Shopper(20, 5, "Meira");
+		Shopper newShopper2 = new Shopper(20, 8, "Tova");
 		shoppers.enqueue(newShopper1);
 		shoppers.enqueue(newShopper2);
 		assertEquals(newShopper2, shoppers.dequeue());

@@ -259,11 +259,7 @@ public class Test {
 		double totalPurchase = shopper.getTotalPurchase();
 		
 		System.out.println(shopper.getName() + "'s total: $" + totalPurchase);
-		double discountAmount = totalPurchase * .15;
-		
-		totalPurchase -= discountAmount;
-		
-		shopper.setTotalPurchase(totalPurchase);
+		shopper.giveCoupon();
 		System.out.println("Coupon applied! " + shopper.getName() + "'s new total: $" + shopper.getTotalPurchase());
 	}
 }
