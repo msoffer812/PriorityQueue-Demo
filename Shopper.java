@@ -6,9 +6,8 @@ import java.util.Comparator;
 public class Shopper extends Person implements Comparable<Shopper>{
 	private int itemsPurchased;		/* Amount of items shopper purchased */
 	private double totalPurchase;	/* Total purchase value by the shopper */
-	private int lineOrder;
 	
-	public Shopper(int ip, double tp, String name, int lineOrder)
+	public Shopper(int ip, double tp, String name)
 	{
 		/*
 		 * Call superconstructor for name
@@ -16,7 +15,6 @@ public class Shopper extends Person implements Comparable<Shopper>{
 		super(name);
 		itemsPurchased = ip;
 		totalPurchase = tp;
-		this.lineOrder = lineOrder;
 	}
 	
 	/*
@@ -48,14 +46,7 @@ public class Shopper extends Person implements Comparable<Shopper>{
 	{
 		return this.name;
 	}
-	/**
-	 * 
-	 * @return order got into line
-	 */
-	public int getLineOrder()
-	{
-		return this.lineOrder;
-	}
+	
 	/*
 	 * Setters
 	 */
@@ -75,14 +66,6 @@ public class Shopper extends Person implements Comparable<Shopper>{
 	public void setTotalPurchase(double t)
 	{
 		this.totalPurchase = t;
-	}
-	/**
-	 * Set the order got into line
-	 * @param o
-	 */
-	public void setOrder(int o)
-	{
-		this.lineOrder = o;
 	}
 	/**
 	 * Add amount to total purchase
@@ -109,15 +92,7 @@ public class Shopper extends Person implements Comparable<Shopper>{
 	@Override
 	public int compareTo(Shopper shopper)
 	{
-		/*
-		int priority = Double.compare(shopper.getTotalPurchase(), getTotalPurchase());
-		if(priority == 0)
-		{
-			return Integer.compare(getLineOrder(), shopper.getLineOrder());
-		}
-		return priority;
-		*/
-		return Double.compare(shopper.getTotalPurchase(), getTotalPurchase());
+		return Double.compare(getTotalPurchase(), shopper.getTotalPurchase());
 	}
 	
 }

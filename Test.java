@@ -84,9 +84,7 @@ public class Test {
 		{
 			giveCoupon(shopper);
 		}
-		int lineOrder = shoppers.size()+1;
 		
-		shopper.setOrder(lineOrder);
 		try
 		{
 			shoppers.enqueue(shopper);	
@@ -110,7 +108,7 @@ public class Test {
 	public static Shopper createShopper(Scanner in)
 	{
 		String shopperName = getStringInput("Enter the shopper's name: ", in);
-		Shopper newShopper = new Shopper(0, 0, shopperName, 0);
+		Shopper newShopper = new Shopper(0, 0, shopperName);
 		shop(in, newShopper);
 		return newShopper;
 	}
@@ -248,8 +246,7 @@ public class Test {
 		{
 			Shopper shopper = shoppers.dequeue();
 			System.out.println("Checking out " + shopper.getName() + 
-					" with a total of $" + shopper.getTotalPurchase() + " who was number " + 
-						shopper.getLineOrder() + " to enter the line.");
+					" with a total of $" + shopper.getTotalPurchase());
 		}
 	}
 	

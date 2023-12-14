@@ -1,23 +1,39 @@
 /**
  * Priority queue to hold the shoppers.
- * NEED HELP - how to maintain stable sort?
- * Why doesn't it work when done like bracketed? currently just holding the value in the shopper to be used
- * in its own compareTo
+ * Implements "Node" class to hold the insertion order of any generic object, which
+ * can be used for prioritizing
  */
 package shoppingHW;
 
-import java.lang.reflect.Array;
 
 
-public class PriorityQueue<T extends Comparable<T>> 
+@SuppressWarnings("rawtypes")
+public class PriorityQueue<T extends Comparable>
 {
-	 private T[] array;
-	 private int size;
+	 private Node[] array;				/* Holds the elements - didn't realize I could use the JCF so used an array, not dynamic */
+	 private int size;						/* Size of the queue for O(1) calculation*/
+	 private int elementsInsertedCount;		/* For assigning a shopper an insertion order when it's put into the array for comparisons*/
 
-		@SuppressWarnings("unchecked")
+	 /**
+	  * Object to put element in,
+	  * and save insertion order
+	  * @author mbrso
+	  *
+	  */
+	 @SuppressWarnings("hiding")
+	private class Node<T>{
+		 int insertionOrder;
+		 T value;
+		 
+		 public Node(int insertionOrder, T value) {
+			 this.insertionOrder = insertionOrder;
+			 this.value = value;
+		 }
+	 }
 		public PriorityQueue(int size) {
-	        this.array = (T[]) Array.newInstance(Comparable.class, size);
+	        this.array = new Node[size];
 	        this.size = 0;
+	        this.elementsInsertedCount = 0;
 	    }
 		
 		/**
@@ -34,8 +50,9 @@ public class PriorityQueue<T extends Comparable<T>>
 	    		throw new IndexOutOfBoundsException("Queue is full");
 	    	}else
 	    	{
-	    		array[size] = element;	/* Assign the last available index to the element */
+	    		array[size] = new Node<T>(elementsInsertedCount, element);	/* Assign the last available index to the element */
 	    		size++;					/* Increment the size, since a new element has been added */
+	    		elementsInsertedCount++;
 		        heapifyUp();			/* Call the method that restructures the array, keeping it's sorted order */
 	    	}
 	    }
@@ -53,7 +70,8 @@ public class PriorityQueue<T extends Comparable<T>>
 	        if (isEmpty()) {
 	            throw new IllegalStateException("Priority queue is empty");
 	        }
-	        T highestPriorityElement = array[0]; /* The highest priority element is always the first item in the array */
+	        @SuppressWarnings("unchecked")
+			T highestPriorityElement = (T) array[0].value; /* The highest priority element is always the first item in the array */
 	        int lastIndex = size - 1;			 /* The last index that contains queue contents in the array */
 	        array[0] = array[lastIndex];		 /* Assign the last element in the array to the now empty hole
 	         											where the highest priority element was, then we'll call the method to reorder*/
@@ -90,7 +108,8 @@ public class PriorityQueue<T extends Comparable<T>>
 	     * now we push it up to the right place in the priorityQueue by swapping it with parents 
 	     * that are greater than it until it's reached its right place
 	     */
-	    private void heapifyUp() {
+	    @SuppressWarnings("unchecked")
+		private void heapifyUp() {
 	        int currentIndex = size - 1; /* We're starting the element at the end of the queue */
 	        
 	        while (currentIndex > 0) {
@@ -100,7 +119,7 @@ public class PriorityQueue<T extends Comparable<T>>
 	             * If the currentIndex is greater in priority to its parents, then switch the two.
 	             * Then change the currentIndex to reflect the position of the element being moved up.
 	             */
-	            if (array[currentIndex].compareTo(array[parentIndex]) < 0) {
+	            if (((T) array[currentIndex].value).compareTo(array[parentIndex].value) > 0) {
 	                swap(currentIndex, parentIndex);
 	                currentIndex = parentIndex; 
 	            }
@@ -162,7 +181,8 @@ public class PriorityQueue<T extends Comparable<T>>
 	     * either the parent, or one of the children.
 	     * Whichever one will be swapped.
 	     */
-	    private int getChild(int currentIndex)
+	    @SuppressWarnings("unchecked")
+		private int getChild(int currentIndex)
 	    {
 	    	int leftChildIndex = 2 * currentIndex + 1;		/* The left child of the current index */
             int rightChildIndex = 2 * currentIndex + 2;		/* The right child of the current index */
@@ -171,20 +191,60 @@ public class PriorityQueue<T extends Comparable<T>>
              * We move from left to right, checking if either child exists, is greater than the parent,
              * and if so, assign it as the index that should be swapped with the parent.
              */
-            if (leftChildIndex < size && array[leftChildIndex].compareTo(array[currentIndex]) <= 0) {
-            	currentIndex = leftChildIndex;
-            } 
-            if (rightChildIndex < size && array[rightChildIndex].compareTo(array[currentIndex]) <= 0) {
-            	currentIndex = rightChildIndex;
+            if(indexIsNotOutOfBounds(leftChildIndex)) {
+	            if (newIndexPriorityIsGreaterThanOldIndexPriority(leftChildIndex, currentIndex)) {
+	            		currentIndex = leftChildIndex;
+	            } else if(((T) array[leftChildIndex].value).compareTo(array[currentIndex].value) == 0 && 
+	            		newIndexWasInsertedBeforeOldIndex(leftChildIndex, currentIndex)) {
+	        			currentIndex = leftChildIndex;
+	        	} 	
+            }
+            if(indexIsNotOutOfBounds(rightChildIndex)) {
+	            if (newIndexPriorityIsGreaterThanOldIndexPriority(rightChildIndex, currentIndex)) {
+	            		currentIndex = rightChildIndex;
+	            } else if(((T) array[rightChildIndex].value).compareTo(array[currentIndex].value) == 0 && 
+	            		newIndexWasInsertedBeforeOldIndex(rightChildIndex, currentIndex)) {
+	        			currentIndex = rightChildIndex;
+	        	} 	
             }
             return currentIndex;
 	    }
 	    
+	    /**
+	     * Helps with code readability,
+	     * For abstraction purposes
+	     * @param childIndex
+	     * @param currIndex
+	     * @return if new index was inserted before old one
+	     */
+	    private boolean newIndexWasInsertedBeforeOldIndex(int childIndex, int currIndex) {
+	    	return array[childIndex].insertionOrder < array[currIndex].insertionOrder;
+	    }
+	    /**
+	     * Helps with code readability,
+	     * For abstraction purposes
+	     * @param childIndex
+	     * @param currIndex
+	     * @return exactly what it says
+	     */
+	    @SuppressWarnings("unchecked")
+		private boolean newIndexPriorityIsGreaterThanOldIndexPriority(int childIndex, int currIndex) {
+	    	return ((T) array[childIndex].value).compareTo(array[currIndex].value) > 0;
+	    }
+	    /**
+	     * Helps with code readability,
+	     * For abstraction purposes
+	     * @param index
+	     * @return
+	     */
+	    private boolean indexIsNotOutOfBounds(int index) {
+	    	return index < size;
+	    }
 	    /*
 	     * swap the values of the given indices of an array, useful for resorting
 	     */
 	    private void swap(int i, int j) {
-	        T temp = array[i];
+	    	Node temp = array[i];
 	        array[i] = array[j];
 	        array[j] = temp;
 	    }
